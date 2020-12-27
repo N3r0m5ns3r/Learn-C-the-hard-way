@@ -1,2 +1,2 @@
 # Learn-C-the-hard-way
-great book.
+Great book. C++/C journey.
