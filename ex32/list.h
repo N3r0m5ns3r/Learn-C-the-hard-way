@@ -2,16 +2,18 @@
 #define lcthw_List_h
 
 #include <stdio.h>
+#include <stdlib.h>
+
 
 struct ListNode;
 typedef struct ListNode {
-  struct ListNode *nest;
+  struct ListNode *next;
   struct ListNode *prev;
   void *value;
 } ListNode;
 
 typedef struct List {
-  int cout;
+  int count;
   ListNode *first;
 
   ListNode *last;
