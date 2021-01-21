@@ -53,9 +53,10 @@ char *test_unshift()
   mu_assert(List_first(list) == test1, "Wrong first value.");
 
   List_unshift(list, test2);
-  mu_assert(List_first(list) == test2, )
-}
+  mu_assert(List_first(list) == test2, "Wrong first value.");
 
+    
+}
 
 
 
