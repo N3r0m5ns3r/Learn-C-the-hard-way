@@ -55,10 +55,21 @@ char *test_unshift()
   List_unshift(list, test2);
   mu_assert(List_first(list) == test2, "Wrong first value.");
 
-    
+  List_unshift(list, test3);
+  mu_assert(List_first(list) == test3, "Wrong last value.");
+  mu_assert(List_count(list) == 3, "Wrong count on unshift");
+
+  return NULL;
 }
 
-
+char *test_remove()
+{
+  // testing the middle remove case
+  char *val = List_remove(list, list->first->next);
+  mu_assert(val == test2, "Wrong removed element.");
+  mu_assert(List_count(list) == 2, "Wrong count after remove");
+  mu_assert()
+}
 
 
 
