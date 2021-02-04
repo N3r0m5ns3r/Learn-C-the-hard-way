@@ -24,6 +24,11 @@ char *test_destroy()
   return NULL;
 }
 
+char *test_new()
+{
+  val1 = DArray_new(array);
+  mu_assert 
+}
 char *test_set()
 {
   DArray_set(array, 0, val1);
