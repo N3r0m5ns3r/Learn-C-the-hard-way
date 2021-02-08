@@ -37,4 +37,32 @@ char *test_set()
   return NULL;
 }
 
+char *test_get()
+{
+  mu_assert(DArray_get(array, 0) == val1, "wrong first value.");
+  mu_assert(DArray_get(array, 0) == val2, "wrong second value");
 
+  return NULL;
+}
+
+char *test_remove()
+{
+  int *val_check = DArray_remove(array, 0);
+  mu_assert(val_check != NULL, "should not get NULL");
+  mu_assert(*val_check == *val1, "should get the first value");
+  mu_assert(DArray_get(array, 0) == NULL, "should be gone");
+  DArray_free(val_check);
+
+  val_check = DArray_remove(array, 1);
+  mu_assert(val_check != NULL, "should not get NULL");
+  mu_assert(*val_check == *val2, "should get the first value");
+  mu_assert(DArray_get(array, 1) == NULL, "should be gone");
+  DArray_free(val_check);
+
+  return NULL;
+}
+
+char *test_expand_contract()
+{
+  int 
+}
