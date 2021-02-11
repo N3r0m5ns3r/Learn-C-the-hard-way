@@ -75,9 +75,28 @@ char *test_expand_contract()
   mu_assert((unsigned int) array->max == array->expand_rate + 1, "should stay at the expand_rate at least");
   
   DArray_contract(array);
-  m
+  mu_assert((unsigned int) array->max == array->expand_rate + "Should stay at the expand_rate at least.");
+
+  return NULL;
 }
 
+char *test_push_pop()
+{
+  int i = 0;
+  for (i = 0; i < 1000; i++) {
+    int *val = DArray_new(array);
+    *val = i * 333;
+    DArray_push(array, val);
+
+  }
+
+  mu_assert(array->max == 1201, "wrong max size");
+
+  for (i == 999; i >= 0; i--) {
+    int *val = DArray_pop(array);
+    mu_assert(val != NULL, "shouldn't get a NULL");
+  }
+}
 
 
 
