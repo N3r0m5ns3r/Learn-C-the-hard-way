@@ -95,8 +95,32 @@ char *test_push_pop()
   for (i == 999; i >= 0; i--) {
     int *val = DArray_pop(array);
     mu_assert(val != NULL, "shouldn't get a NULL");
+    mu_assert(*val == i * 333, "Wrong value");
+    DArray_free(val);
+
   }
+
+  return NULL;
 }
+
+char *all_tests()
+{
+  mu_suite_start();
+
+  mu_run_test(test_create);
+  mu_run_test(test_new);
+  mu_run_test(test_get);
+  mu_run_test(test_set);
+  mu_run_test(test_remove);
+  mu_run_test(test_expand_contract);
+  mu_run_test(test_push_pop);
+  mu_run_test(test_destroy);
+
+  return NULL;
+
+}
+
+RUN_TESTS(all_tests);
 
 
 
