@@ -86,39 +86,35 @@ void DArray_destroy(DArray * array)
 
 void DArray_clear_destroy(DArray * array) 
 {
-
+  DArray_clear(array);
+  DArray_destroy(array);
 }
 
+int DArray_push(DArray * array, void *el)
+{
+  array->contents[array->end] = el;
+  array->end++;
+  
+  if (DArray_end(array) >= DArray_max(array)) {
+    return DArray_expand(array);
+  } else {
+    return 0;
+  }
+}
 
+void *DArray_pop(DArray * array)
+{
+  check(array->end - 1 >= 0, "attempt to pop from empty");
 
+  void *el = DArray_remove(array, array->end - 1);
+  array->end--;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  if(DArray_end(array) > (int)array->expand_rate && DArray_end(array) % array->expand_rate) {
+    DArray_contract(array);
+  }
+  
+  return el;
+error:
+  return NULL;
+}
 
