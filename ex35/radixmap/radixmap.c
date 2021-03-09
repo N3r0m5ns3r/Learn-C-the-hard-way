@@ -60,5 +60,11 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t * source, uin
   }
 
   //fill dest with the right values in the right place
-  for (sp = sou)
+  for (sp = source, end = source + max; sp <end; sp++) {
+    cp = count + ByteOf(sp, offset);
+    dest[*cp] = *sp;
+    ++(*cp);
+  }
 }
+
+
