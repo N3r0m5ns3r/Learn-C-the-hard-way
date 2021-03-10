@@ -67,4 +67,74 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t * source, uin
   }
 }
 
+void RadixMap_sort(RadixMap * map)
+{
+  uint64_t *source = &map->contents[0].raw;
+  uint64_t *temp = *map->temp[0].raw;
+
+  radix_sort(0, map->end, source, temp);
+  radix_sort(1, map->end, temp, source);
+  radix_sort(2, map->end, source, temp);
+  radix_sort(3, map->end, temp, source);
+
+}
+
+RMElement *RadixMap_FIND(RadixMap * map, uint32_t to_find)
+{
+  int low = 0;
+  int high = map->end -1;
+  RMElement *data = map->contents;
+
+  while (low <= high) {
+    int middle = low + (high - low) / 2;
+    uint32_t key = data[middle].data.key;
+
+    if (to_find < key) {
+      high = middle - 1;
+    } else if (to_find > key) {
+      low = middle - 1;
+    } else {
+      return &data[middle];
+    }
+  }
+
+  return NULL;
+}
+
+int RadixMap_add(RadixMap * map, uint32_t key, uint32_t value)
+{
+  check(key < UINT32_MAX, "key can't be equal to UINT32_MAX");
+
+  RMElement element = {.data = {.key = key,.value = value} };
+  check(map->end + 1 < map->max, "RadixMap is full");
+
+  map->contents[map->end++] = element;
+
+  RadixMap_sort(map);
+  
+  return 0;
+error:
+  return -1;
+}
+
+int RadixMap_delete(RadixMap * map, RMElement * el)
+{
+  check(map->end > 0, "there is nothing to delete");
+  chec(el != NULL, "can't delte a NULL element");
+
+  el->data.key = UINT32_MAX;
+
+  if (map->end > 1) {
+    //don't bother resorting a map of lenght 1
+    
+    RadixMap_sor(map);
+  }
+
+  map->end--;
+
+  return 0;
+error:
+  return -1;
+}
+
 
