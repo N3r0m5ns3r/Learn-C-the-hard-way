@@ -97,4 +97,46 @@ error:
 
 }
 
-static inline DArray *Hashmap_find_bucket(Hashmap * map, void * key )
+static inline DArray *Hashmap_find_bucket(Hashmap * map, void * key, int create, uint32_t *hash_out)
+{
+  uint32_t hash = map->hash(key);
+  int bucket_n = hash % DEFAULT_NUMBER_OF_BUCKETS;
+  check(bucket_n >= 0, "invalid bucket found: %d", bucket_n);
+  //store it for the return so the caller can use it
+  *hash_out = hash;
+
+  DArray *bucket = DArray_get(map->buckets, bucket_n);
+
+  if (!bucket && create) {
+    //new bucket, set it up
+    bucket = DArray_create(sizeof(void *), DEFAULT_NUMBER_OF_BUCKETS);
+    check_mem(bucket);
+    DArray_set(map->buckets, bucket_n, bucket);
+
+  }
+  return bucket;
+  
+error:
+  return NULL;
+
+}
+
+int Hashmap_set(Hashmap * map, void *key, void *data) 
+{
+  uint32_t hash = 0;
+  DArray *bucket = Hashmap_find_bucket(map, key, 1, &hash);
+  check(bucket, "Error can't create bucket");
+  
+  HashmapNode *node = Hashmap_node_create(hash, key, data);
+  check_mem(node);
+
+  DArray_push(bucket, node);
+
+  return 0;
+
+error:
+  return -1;
+
+}
+
+static inline
