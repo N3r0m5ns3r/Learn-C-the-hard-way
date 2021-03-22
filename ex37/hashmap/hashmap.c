@@ -139,4 +139,37 @@ error:
 
 }
 
-static inline
+static inline int Hashmap_get_node(Hashmap * map, uint32_t hash, DArray * bucket, void * key) 
+{
+  int i = 0;
+  
+  for (i = 0; i < DArray_end(bucket); i++) {
+    debug("TRY: %d", i);
+    HashmapNode *node = DArray_get(bucket, i);
+    if (node->hash == hash && map->compare(node->key, key) == 0) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+void *Hashmap_get(Hashmap * map, void *key)
+{
+  uint32_t hash = 0;
+  DArray *bucket = Hashmap_find_bucket(map, key, 0, &hash);
+  if (!bucket) return NULL;
+
+  int i = Hashmap_get_node(map, hash, bucket, key);
+  if (i == -1) return NULL;
+
+  HashmapNode *node = DArray_get(bucket, i);
+  check(node != NULL, "Failed to get node from bucket when it should exist.");
+  
+  return node->data;
+
+error:    //fallthrough
+  return NULL;
+}
+
+
