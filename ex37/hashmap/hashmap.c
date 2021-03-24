@@ -172,4 +172,50 @@ error:    //fallthrough
   return NULL;
 }
 
+int Hashmap_traverse(Hashmap * map, Hashmap_traverse_cb traverse_cb)
+{
+  int i = 0;
+  int j = 0;
+  int rc = 0;
 
+  for (i = 0; i < DArray_count(map->buckets); i++) {
+    DArray *bucket = DArray_get(map->buckets, i);
+
+    if (bucket) {
+      for (j = 0; j < DArray_count(bucket); j++) {
+        HashmapNode *node = DArray_get(bucket, j);
+        rc = traverse_cb(node);
+        if (rc != 0)
+          return rc;
+      }
+    }
+  }
+
+  return 0;
+}
+
+void *Hashmap_delete(Hashmap * map, void *key)
+{
+  uint32_t hash = 0;
+  DArray *bucket = Hashmap_find_bucket(map, key, 0, &hash);
+  if (!bucket)
+    return NULL;
+
+  int i = Hashmap_get_node(map, hash, bucket, key);
+  if (i == -1) 
+    return NULL;
+
+  HashmapNode *node = DArray_get(bucket, i);
+  void *data = node->data;
+  free(data);
+
+  HashmapNode *ending = DArray_pop(bucket);
+
+  if (ending != node) {
+    // not the last one swap it
+    DArray_set(bucket, i, ending);
+
+  }
+
+  return data;
+}
