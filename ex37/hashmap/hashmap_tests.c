@@ -69,11 +69,6 @@ char *test_get_set()
 
 char *test_traverse()
 {
-
+  int rc = Hashmap_traverse(map, traverse_good_cb);
 }
-
-
-
-
-
 
