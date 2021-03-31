@@ -70,5 +70,47 @@ char *test_get_set()
 char *test_traverse()
 {
   int rc = Hashmap_traverse(map, traverse_good_cb);
+  mu_assert(rc == 0, "failed to traverse");
+  mu_assert(traverse_called == 2, "wrong count traverse for fail");
+
+  return NULL;
 }
 
+char *test_delete()
+{
+  bstring deleted = (bstring) Hashmap_delete(map, &test1);
+  mu_assert(deleted != NULL, "Got NULL on delete");
+  mu_assert(deleted == &expect1, "should get test1");
+  bstring result = Hashmap_get(map, &test1);
+  mu_assert(result == NULL, "should delete");
+
+  deleted = (bstring) Hashmap_delete(map, &test2);
+  mu_assert(deleted != NULL, "got NULL on delete");
+  mu_assert(deleted == &expect2, "should get test2");
+  bstring result = Hashmap_get(map, &test1);
+  mu_assert(result == NULL, "should delete");
+
+  deleted = (bstring) Hashmap_delete(map, &test3);
+  mu_assert(deleted != NULL, "got NULL on delete");
+  mu_assert(deleted == &expect3, "should get test3");
+  bstring result = Hashmap_get(map, &test1);
+  mu_assert(result == NULL, "should delete");
+
+  return NULL;
+}
+
+char *all_tests()
+{
+  mu_suite_start();
+
+  mu_run_test(test_create);
+  mu_run_test(test_get_set);
+  mu_run_test(test_traverse);
+  mu_run_test(test_delete);
+  mu_run_test(tests_destroy);
+
+  return NULL;
+
+}
+
+RUN_TESTS(all_tests);
